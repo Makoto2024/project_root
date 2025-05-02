@@ -1,0 +1,7 @@
+load("@gazelle//:def.bzl", "gazelle")
+
+# Gazelle will help auto generate BUILD files based on go.mod.
+gazelle(
+    name = "gazelle",
+    prefix = "github.com/Makoto2024/project_root",
+)
