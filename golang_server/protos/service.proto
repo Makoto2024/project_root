@@ -1,0 +1,21 @@
+edition = "2023";
+
+package project_root.golang_server;
+
+// Enable Opaque API to include builder types in .pb.go.
+// See https://protobuf.dev/reference/go/opaque-faq/#enable
+import "google/protobuf/go_features.proto";
+option features.(pb.go).api_level = API_OPAQUE;
+
+service HelloService {
+  // A simple hello RPC.
+  rpc Hello(HelloRequest) returns (HelloResponse) {}
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloResponse {
+  string greeting = 1;
+}

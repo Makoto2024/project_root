@@ -1,0 +1,24 @@
+load("@rules_go//proto:def.bzl", "go_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+package(
+    default_visibility = [
+        "//:__subpackages__",
+    ],
+)
+
+proto_library(
+    name = "service_proto",
+    srcs = ["service.proto"],
+    deps = ["@com_google_protobuf//:go_features_proto"],
+)
+
+go_proto_library(
+    name = "service_go_proto",
+    compilers = [
+        "@rules_go//proto:go_proto",
+        "@rules_go//proto:go_grpc_v2",
+    ],
+    importpath = "github.com/Makoto2024/project_root/golang_server/protos/servicepb",
+    proto = ":service_proto",
+)
