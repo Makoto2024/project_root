@@ -2,7 +2,7 @@ load("@rules_go//go:def.bzl", "go_library")
 
 package(
     default_visibility = [
-        ":__subpackages__",
+        "//golang_server/cmd/server:__subpackages__",
     ],
 )
 
