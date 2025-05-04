@@ -1,6 +1,7 @@
 """
 project_root is an example of how to create an RPC server using bazel build system.
 """
+
 module(
     name = "project_root",
     version = "0.1.0",
@@ -19,12 +20,17 @@ bazel_dep(name = "rules_proto", version = "7.1.0")
 # Go SDK configuration and Gazelle interop.
 # See https://github.com/bazel-contrib/rules_go/blob/master/docs/go/core/bzlmod.md
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
-go_sdk.download(name = "go_sdk", version = "1.24.2")
+go_sdk.download(
+    name = "go_sdk",
+    version = "1.24.2",
+)
 use_repo(go_sdk, "go_sdk")
+
 register_toolchains("@go_sdk//:all")
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")
 use_repo(
     go_deps,
+    "org_golang_google_protobuf",      # For google.golang.org/protobuf (Go Protobuf runtime)
 )

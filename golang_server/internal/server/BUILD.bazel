@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+package(
+    default_visibility = [
+        ":__subpackages__",
+    ],
+)
+
+go_library(
+    name = "server",
+    srcs = ["hello_service.go"],
+    importpath = "github.com/Makoto2024/project_root/golang_server/internal/server",
+    deps = [
+        "//golang_server/protos:service_go_proto",
+        "@org_golang_google_protobuf//proto",
+    ],
+)
