@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+package(
+    default_visibility = [
+        "//golang_server/cmd/client:__subpackages__",
+    ],
+)
+
+go_library(
+    name = "client_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/Makoto2024/project_root/golang_server/cmd/client",
+    deps = [
+        "//golang_server/protos:service_go_proto",
+        "@com_github_golang_glog//:glog",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//credentials/insecure",
+    ],
+)
+
+go_binary(
+    name = "client",
+    embed = [":client_lib"],
+)
