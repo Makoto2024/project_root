@@ -28,7 +28,7 @@ func (c *cfg) registerFlags(fs *flag.FlagSet) {
 	if fs == nil {
 		fs = flag.CommandLine
 	}
-	fs.StringVar(&c.IP, "ip", "127.0.0.1", "IP address to listen on")
+	fs.StringVar(&c.IP, "ip", "0.0.0.0", "IP address to listen on")
 	fs.IntVar(&c.Port, "port", 8080, "Port to listen on")
 }
 
