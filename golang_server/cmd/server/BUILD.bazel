@@ -1,4 +1,6 @@
 load("@rules_go//go:def.bzl", "go_binary")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 
 package(
     default_visibility = ["//visibility:private"],
@@ -9,6 +11,14 @@ go_binary(
     srcs = [
         "main.go",
     ],
+    gc_linkopts = [
+        # Need "-linkmode external -extldflags=-static" to build fully static binary.
+        # See https://github.com/bazel-contrib/rules_go/issues/161#issuecomment-304469169
+        "-linkmode",
+        "external",
+        "-extldflags",
+        "-static",
+    ],
     deps = [
         "//golang_server/internal/server",
         "//golang_server/protos:service_go_proto",
@@ -16,4 +26,29 @@ go_binary(
         "@org_golang_google_grpc//:grpc",
         "@org_golang_google_grpc//reflection",
     ],
+)
+
+
+pkg_tar(
+    name = "server_binary_layer",
+    files = {
+        ":server": "server",
+    },
+    mode = "0755",
+    package_dir = "/",
+)
+
+oci_image(
+    name = "server_image",
+    base = "@debian_latest",
+    entrypoint = ["/server"],
+    tars = [
+        ":server_binary_layer",
+    ],
+)
+
+oci_load(
+    name = "server_image_tar",
+    image = ":server_image",
+    repo_tags = ["makoto2024/project_root_golang_server_image:latest"],
 )

@@ -36,3 +36,24 @@ use_repo(
     "org_golang_google_grpc",          # For google.golang.org/grpc
     "org_golang_google_protobuf",      # For google.golang.org/protobuf (Go Protobuf runtime)
 )
+
+# OCI Image dependencies.
+bazel_dep(name = "rules_pkg", version = "1.1.0")
+bazel_dep(name = "rules_oci", version = "2.2.6")
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+oci.pull(
+    name = "debian_latest",
+    image = "debian:latest",
+    platforms = [
+        "linux/amd64",
+        "linux/arm64/v8",
+    ],
+    reproducible = False,
+)
+use_repo(
+    oci,
+    "debian_latest",
+    "debian_latest_linux_amd64",
+    "debian_latest_linux_arm64_v8",
+)
