@@ -8,7 +8,10 @@ package(
 
 go_library(
     name = "client_lib",
-    srcs = ["main.go"],
+    srcs = [
+        "cfg.go",
+        "main.go",
+    ],
     importpath = "github.com/Makoto2024/project_root/golang_server/cmd/client",
     deps = [
         "//golang_server/protos:service_go_proto",

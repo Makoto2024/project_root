@@ -41,6 +41,7 @@ func mainWithCfg(ctx context.Context, cfg *cfg) {
 	var serverOpts []grpc.ServerOption
 	grpcServer := grpc.NewServer(serverOpts...)
 	pb.RegisterHelloServiceServer(grpcServer, server.NewHelloServer())
+	pb.RegisterPongServiceServer(grpcServer, server.NewPongServer())
 	reflection.Register(grpcServer)
 	grpcServer.Serve(lis)
 }

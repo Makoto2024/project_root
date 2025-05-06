@@ -5,6 +5,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -14,20 +15,18 @@ import (
 	pb "github.com/Makoto2024/project_root/golang_server/protos/servicepb"
 )
 
-// cfg will be set via flags.
-type cfg struct {
-	IP   string
-	Port int
-	Name string
+func callHello(
+	ctx context.Context, cfg *cfg, conn *grpc.ClientConn,
+) (*pb.HelloResponse, error) {
+	client := pb.NewHelloServiceClient(conn)
+	return client.Hello(ctx, pb.HelloRequest_builder{Name: &cfg.Param}.Build())
 }
 
-func (c *cfg) registerFlags(fs *flag.FlagSet) {
-	if fs == nil {
-		fs = flag.CommandLine
-	}
-	fs.StringVar(&c.IP, "ip", "127.0.0.1", "IP address to connect to")
-	fs.IntVar(&c.Port, "port", 8080, "Port to connect to")
-	fs.StringVar(&c.Name, "name", "gRPC", "Name to use in the request")
+func callPong(
+	ctx context.Context, cfg *cfg, conn *grpc.ClientConn,
+) (*pb.PongResponse, error) {
+	client := pb.NewPongServiceClient(conn)
+	return client.Pong(ctx, pb.PongRequest_builder{Msg: &cfg.Param}.Build())
 }
 
 func mainWithCfg(ctx context.Context, cfg *cfg) {
@@ -35,25 +34,36 @@ func mainWithCfg(ctx context.Context, cfg *cfg) {
 	credOpt := grpc.WithTransportCredentials(insecure.NewCredentials())
 	conn, err := grpc.NewClient(target, credOpt)
 	if err != nil {
-		glog.FatalContextf(ctx, "grpc.Dial(%q) err: %v", target, err)
+		glog.ExitContextf(ctx, "grpc.Dial(%q) err: %v", target, err)
 	}
 	defer conn.Close()
 
-	client := pb.NewHelloServiceClient(conn)
-	resp, err := client.Hello(ctx, pb.HelloRequest_builder{Name: &cfg.Name}.Build())
-	if err != nil {
-		glog.FatalContextf(ctx, "client.Search err: %v", err)
+	switch cfg.Service {
+	case serviceTypeHelloService:
+		resp, err := callHello(ctx, cfg, conn)
+		if err != nil {
+			glog.ExitContextf(ctx, "HelloService.Hello = %v", err)
+		}
+		glog.ErrorContextf(ctx, "HelloService.Hello = %s", resp.GetGreeting())
+	case serviceTypePongService:
+		resp, err := callPong(ctx, cfg, conn)
+		if err != nil {
+			glog.ExitContextf(ctx, "PongService.Pong = %v", err)
+		}
+		glog.ErrorContextf(ctx, "PongService.Pong = %s", resp.GetMsg())
 	}
-
-	glog.ErrorContextf(ctx, "resp.greeting: %s", resp.GetGreeting())
 }
 
 func main() {
-	var cfg cfg
-	cfg.registerFlags(nil)
-	flag.Parse()
-
 	ctx := context.Background()
+
+	fs := flag.NewFlagSet(os.Args[0], flag.ContinueOnError)
+	var cfg cfg
+	cfg.registerFlags(fs)
+	if err := fs.Parse(os.Args[1:]); err != nil {
+		glog.ExitContextf(ctx, "Parse command line args = %v", err)
+	}
+
 	glog.ErrorContextf(ctx, "cfg = %#v", cfg)
 	mainWithCfg(ctx, &cfg)
 }

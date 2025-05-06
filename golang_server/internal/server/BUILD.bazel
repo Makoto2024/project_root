@@ -8,7 +8,10 @@ package(
 
 go_library(
     name = "server",
-    srcs = ["hello_service.go"],
+    srcs = [
+        "hello_service.go",
+        "pong_service.go",
+    ],
     importpath = "github.com/Makoto2024/project_root/golang_server/internal/server",
     deps = [
         "//golang_server/protos:service_go_proto",

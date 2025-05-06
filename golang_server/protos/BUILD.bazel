@@ -9,7 +9,10 @@ package(
 
 proto_library(
     name = "service_proto",
-    srcs = ["service.proto"],
+    srcs = [
+        "hello_service.proto",
+        "pong_service.proto",
+    ],
     deps = ["@com_google_protobuf//:go_features_proto"],
 )
 

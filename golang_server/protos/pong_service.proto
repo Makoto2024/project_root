@@ -1,0 +1,20 @@
+edition = "2023";
+
+package project_root.golang_server;
+
+// Enable Opaque API to include builder types in .pb.go.
+// See https://protobuf.dev/reference/go/opaque-faq/#enable
+import "google/protobuf/go_features.proto";
+option features.(pb.go).api_level = API_OPAQUE;
+
+service PongService {
+  rpc Pong(PongRequest) returns (PongResponse) {}
+}
+
+message PongRequest {
+  string msg = 1;
+}
+
+message PongResponse {
+  string msg = 1;
+}
