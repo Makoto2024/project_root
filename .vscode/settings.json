@@ -1,4 +1,7 @@
 {
+  "files.associations": {
+    "system_error": "cpp"
+  },
   // Settings for go/bazel are based on editor setup instructions at
   // https://github.com/bazelbuild/rules_go/wiki/Editor-setup#visual-studio-code
   "go.goroot": "${workspaceFolder}/bazel-${workspaceFolderBasename}/external/rules_go++go_sdk+go_default_sdk/",

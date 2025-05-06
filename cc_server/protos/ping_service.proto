@@ -1,0 +1,20 @@
+edition = "2023";
+
+package project_root.cc_server;
+
+// Enable Opaque API to include builder types in .pb.go.
+// See https://protobuf.dev/reference/go/opaque-faq/#enable
+import "google/protobuf/go_features.proto";
+option features.(pb.go).api_level = API_OPAQUE;
+
+service PingService {
+    rpc Ping(PingRequest) returns (PingResponse) {}
+}
+
+message PingRequest {
+    string msg = 1;
+}
+
+message PingResponse {
+    string msg = 1;
+}

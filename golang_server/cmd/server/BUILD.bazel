@@ -40,7 +40,7 @@ pkg_tar(
 
 oci_image(
     name = "server_image",
-    base = "@debian_latest",
+    base = "@distroless_static_debian12",
     entrypoint = ["/server"],
     tars = [
         ":server_binary_layer",

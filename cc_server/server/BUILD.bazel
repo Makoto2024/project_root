@@ -1,0 +1,61 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
+load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+
+package(
+    default_visibility = [
+        "//cc_server/server:__subpackages__",
+    ],
+)
+
+cc_library(
+    name = "server_lib",
+    srcs = [
+        "ping_service_impl.cc",
+    ],
+    hdrs = [
+        "ping_service_impl.h",
+    ],
+    deps = [
+        "//cc_server/protos:service_cc_grpc",
+        "//cc_server/protos:service_cc_proto",
+    ],
+)
+
+cc_binary(
+    name = "server",
+    srcs = [
+        "main.cc",
+    ],
+    # https://bazel.build/reference/be/c-cpp#cc_binary.linkstatic
+    features = ["fully_static_link"],
+    deps = [
+        ":server_lib",
+        "@abseil-cpp//absl/log:absl_log",
+        "@grpc//:grpc++_reflection",
+    ],
+)
+
+pkg_tar(
+    name = "server_binary_layer",
+    files = {
+        ":server": "server",
+    },
+    mode = "0755",
+    package_dir = "/",
+)
+
+oci_image(
+    name = "server_image",
+    base = "@distroless_static_debian12",
+    entrypoint = ["/server"],
+    tars = [
+        ":server_binary_layer",
+    ],
+)
+
+oci_load(
+    name = "server_image_tar",
+    image = ":server_image",
+    repo_tags = ["makoto2024/project_root_cc_server_image:latest"],
+)

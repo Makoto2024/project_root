@@ -11,11 +11,16 @@ module(
 # Core Bazel dependencies.
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "rules_go", version = "0.54.0")
+bazel_dep(name = "rules_cc", version = "0.1.1")
 bazel_dep(name = "gazelle", version = "0.43.0")
 
 # Protobuf dependencies.
 bazel_dep(name = "protobuf", version = "31.0-rc2", repo_name = "com_google_protobuf")
 bazel_dep(name = "rules_proto", version = "7.1.0")
+bazel_dep(name = "grpc", version = "1.72.0")
+
+# Cpp related.
+bazel_dep(name = "abseil-cpp", version = "20250127.1")
 
 # Go SDK configuration and Gazelle interop.
 # See https://github.com/bazel-contrib/rules_go/blob/master/docs/go/core/bzlmod.md
@@ -43,17 +48,14 @@ bazel_dep(name = "rules_oci", version = "2.2.6")
 
 oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
 oci.pull(
-    name = "debian_latest",
-    image = "debian:latest",
+    name = "distroless_static_debian12",
+    image = "gcr.io/distroless/static-debian12",
     platforms = [
         "linux/amd64",
-        "linux/arm64/v8",
     ],
-    reproducible = False,
+    tag="latest",
 )
 use_repo(
     oci,
-    "debian_latest",
-    "debian_latest_linux_amd64",
-    "debian_latest_linux_arm64_v8",
+    "distroless_static_debian12",
 )
