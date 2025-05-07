@@ -1,0 +1,21 @@
+services:
+  golang-server:
+    image: makoto2024/project_root_golang_server_image:latest
+    hostname: golang-server
+    # Internal port is 8080, NOT exposed to host by default
+    networks:
+      - grpc_network
+
+  cc-server:
+    image: makoto2024/project_root_cc_server_image:latest
+    hostname: cc-server
+    ports: # External access.
+      - "7070:7070"
+    depends_on:
+      - golang-server
+    networks:
+      - grpc_network
+
+networks:
+  grpc_network:
+    driver: bridge

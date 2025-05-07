@@ -51,4 +51,5 @@ oci_load(
     name = "server_image_tar",
     image = ":server_image",
     repo_tags = ["makoto2024/project_root_golang_server_image:latest"],
+    visibility = ["//visibility:public"],
 )
