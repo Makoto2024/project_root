@@ -14,7 +14,11 @@ go_library(
     ],
     importpath = "github.com/Makoto2024/project_root/golang_server/internal/server",
     deps = [
+        "//cc_server/protos:service_go_proto",
         "//golang_server/protos:service_go_proto",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//credentials",
+        "@org_golang_google_grpc//credentials/insecure",
         "@org_golang_google_protobuf//proto",
     ],
 )

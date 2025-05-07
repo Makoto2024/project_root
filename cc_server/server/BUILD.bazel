@@ -19,6 +19,9 @@ cc_library(
     deps = [
         "//cc_server/protos:service_cc_grpc",
         "//cc_server/protos:service_cc_proto",
+        "//golang_server/protos:service_cc_grpc",
+        "//golang_server/protos:service_cc_proto",
+        "@grpc//:grpc++",
     ],
 )
 
